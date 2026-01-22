@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    requireAdmin(req);
+    await requireAdmin(req);
     const approvedSnapshot = await db.collection("alumni").where("status", "==", "approved").get();
     const pendingSnapshot = await db.collection("alumni").where("status", "==", "pending").get();
     const eventsSnapshot = await db.collection("events").where("is_active", "==", true).get();

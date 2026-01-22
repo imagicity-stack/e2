@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    requireAdmin(req);
+    await requireAdmin(req);
     const snapshot = await db.collection("alumni").get();
     const alumniList = snapshot.docs.map((doc) => doc.data());
     res.status(200).json(alumniList);

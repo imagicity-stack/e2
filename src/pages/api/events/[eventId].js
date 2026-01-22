@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   if (req.method === "PUT") {
     try {
-      requireAdmin(req);
+      await requireAdmin(req);
       const data = req.body || {};
       const snapshot = await db.collection("events").where("id", "==", eventId).limit(1).get();
       if (snapshot.empty) {
@@ -35,7 +35,7 @@ export default async function handler(req, res) {
 
   if (req.method === "DELETE") {
     try {
-      requireAdmin(req);
+      await requireAdmin(req);
       const snapshot = await db.collection("events").where("id", "==", eventId).limit(1).get();
       if (snapshot.empty) {
         res.status(404).json({ detail: "Event not found" });
