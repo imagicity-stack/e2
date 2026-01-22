@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    requireAdmin(req);
+    await requireAdmin(req);
     const snapshot = await db.collection("notifications").orderBy("created_at", "desc").limit(50).get();
     const notifications = snapshot.docs.map((doc) => doc.data());
     res.status(200).json(notifications);

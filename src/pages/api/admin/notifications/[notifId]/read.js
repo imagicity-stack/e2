@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    requireAdmin(req);
+    await requireAdmin(req);
     const { notifId } = req.query;
     const snapshot = await db.collection("notifications").where("id", "==", notifId).limit(1).get();
     if (snapshot.empty) {

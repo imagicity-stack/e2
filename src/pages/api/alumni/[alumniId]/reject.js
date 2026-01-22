@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    requireAdmin(req);
+    await requireAdmin(req);
     const { alumniId } = req.query;
 
     const snapshot = await db.collection("alumni").where("id", "==", alumniId).limit(1).get();
