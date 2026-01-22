@@ -345,7 +345,7 @@ const LandingPage = () => {
           </div>
 
           <div className="text-center mt-16">
-            <Link to="/register">
+            <Link href="/register">
               <Button className="bg-[#C9A227] text-[#2D2D2D] hover:bg-[#D4B84A] rounded-none text-sm tracking-wider px-10 py-6 font-semibold">
                 Get Involved Today
                 <ArrowRight className="ml-2 w-4 h-4" />
@@ -366,13 +366,13 @@ const LandingPage = () => {
             Register today and receive your official EHSAS membership.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/register" data-testid="cta-register-btn">
+            <Link href="/register" data-testid="cta-register-btn">
               <Button className="bg-[#8B1C3A] text-white hover:bg-[#6B0F2A] rounded-none text-sm tracking-wider px-10 py-6 font-medium shadow-xl">
                 Register Now
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </Link>
-            <Link to="/directory" data-testid="cta-directory-btn">
+            <Link href="/directory" data-testid="cta-directory-btn">
               <Button className="bg-transparent border border-[#8B1C3A] text-[#8B1C3A] hover:bg-[#8B1C3A] hover:text-white rounded-none text-sm tracking-wider px-10 py-6 font-medium">
                 Browse Directory
               </Button>
