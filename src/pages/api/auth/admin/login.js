@@ -1,7 +1,4 @@
-import { db } from "@/lib/firebaseAdmin";
-import { createJwtToken } from "@/lib/auth";
-import { ensureAdminAccount } from "@/lib/admin";
-import { verifyPassword } from "@/lib/server-utils";
+import { adminAuth, db } from "@/lib/firebaseAdmin";
 import { sendError } from "@/lib/api-helpers";
 
 export default async function handler(req, res) {
@@ -11,32 +8,35 @@ export default async function handler(req, res) {
   }
 
   try {
-    await ensureAdminAccount();
-    const { email, password } = req.body || {};
+    const { idToken } = req.body || {};
 
-    if (!email || !password) {
-      res.status(400).json({ detail: "Email and password are required" });
+    if (!idToken) {
+      res.status(400).json({ detail: "Firebase ID token is required" });
       return;
     }
 
-    const adminSnapshot = await db.collection("admins").where("email", "==", email).limit(1).get();
+    const decodedToken = await adminAuth.verifyIdToken(idToken);
+    const email = decodedToken.email;
+    if (!email) {
+      res.status(401).json({ detail: "Email missing from token" });
+      return;
+    }
+
+    const adminSnapshot = await db.collection("admin").where("email", "==", email).limit(1).get();
     if (adminSnapshot.empty) {
-      res.status(401).json({ detail: "Invalid credentials" });
+      res.status(403).json({ detail: "Admin access required" });
       return;
     }
 
     const admin = adminSnapshot.docs[0].data();
-    if (!verifyPassword(password, admin.password)) {
-      res.status(401).json({ detail: "Invalid credentials" });
+    if (admin.role !== "admin") {
+      res.status(403).json({ detail: "Admin access required" });
       return;
     }
 
-    const token = createJwtToken({ id: admin.id, email: admin.email, role: "admin" });
     res.status(200).json({
-      id: admin.id,
-      email: admin.email,
-      role: "admin",
-      token,
+      email,
+      role: admin.role,
     });
   } catch (error) {
     sendError(res, error);

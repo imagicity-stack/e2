@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
   if (req.method === "POST") {
     try {
-      requireAdmin(req);
+      await requireAdmin(req);
       const data = req.body || {};
       const spotlightDoc = {
         id: uuidv4(),
