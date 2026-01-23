@@ -255,11 +255,13 @@ const AdminDashboard = () => {
     setShowDetailModal(true);
   };
 
+  const normalizeSearchValue = (value) => (value ?? "").toString().toLowerCase();
+
   const filteredAllAlumni = allAlumni.filter(
     (a) =>
-      a.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.email.toLowerCase().includes(searchQuery.toLowerCase())
+      normalizeSearchValue(a.first_name).includes(normalizeSearchValue(searchQuery)) ||
+      normalizeSearchValue(a.last_name).includes(normalizeSearchValue(searchQuery)) ||
+      normalizeSearchValue(a.email).includes(normalizeSearchValue(searchQuery))
   );
 
   const getStatusBadge = (status) => {

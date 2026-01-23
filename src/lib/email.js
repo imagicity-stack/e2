@@ -5,6 +5,7 @@ const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
 const SMTP_USER = process.env.SMTP_USER || "";
 const SMTP_PASSWORD = process.env.SMTP_PASSWORD || "";
 const SMTP_FROM_EMAIL = process.env.SMTP_FROM_EMAIL || "ehsas@eldenheights.org";
+const SMTP_NOTIFICATION_EMAIL = process.env.SMTP_NOTIFICATION_EMAIL || SMTP_FROM_EMAIL;
 const SMTP_FROM_NAME = process.env.SMTP_FROM_NAME || "EHSAS - Elden Heights School Alumni Society";
 
 const transporter = nodemailer.createTransport({
@@ -56,10 +57,16 @@ export const sendRegistrationNotification = async (alumniData) => {
     </html>
   `;
 
-  return sendEmail(SMTP_FROM_EMAIL, subject, htmlContent);
+  return sendEmail(SMTP_NOTIFICATION_EMAIL, subject, htmlContent);
 };
 
-export const sendApprovalEmail = async (alumniData, ehsasId) => {
+export const sendApprovalEmail = async (alumniData, ehsasId, recipientEmail = alumniData?.email) => {
+  if (!recipientEmail) {
+    console.warn("Approval email skipped: missing recipient email.", {
+      alumniId: alumniData?.id,
+    });
+    return false;
+  }
   const subject = `Welcome to EHSAS! Your Membership ID: ${ehsasId}`;
   const htmlContent = `
     <html>
@@ -97,7 +104,7 @@ export const sendApprovalEmail = async (alumniData, ehsasId) => {
     </html>
   `;
 
-  return sendEmail(alumniData.email, subject, htmlContent);
+  return sendEmail(recipientEmail, subject, htmlContent);
 };
 
 export const sendRejectionEmail = async (alumniData) => {

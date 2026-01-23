@@ -37,7 +37,8 @@ export default async function handler(req, res) {
       approved_at: new Date().toISOString(),
     });
 
-    const emailSent = await sendApprovalEmail(alumni, ehsasId);
+    const recipientEmail = alumni.email?.trim();
+    const emailSent = await sendApprovalEmail(alumni, ehsasId, recipientEmail);
 
     res.status(200).json({
       message: `Alumni approved with EHSAS ID: ${ehsasId}`,
