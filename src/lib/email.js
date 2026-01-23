@@ -59,7 +59,13 @@ export const sendRegistrationNotification = async (alumniData) => {
   return sendEmail(SMTP_FROM_EMAIL, subject, htmlContent);
 };
 
-export const sendApprovalEmail = async (alumniData, ehsasId) => {
+export const sendApprovalEmail = async (alumniData, ehsasId, recipientEmail = alumniData?.email) => {
+  if (!recipientEmail) {
+    console.warn("Approval email skipped: missing recipient email.", {
+      alumniId: alumniData?.id,
+    });
+    return false;
+  }
   const subject = `Welcome to EHSAS! Your Membership ID: ${ehsasId}`;
   const htmlContent = `
     <html>
@@ -97,7 +103,7 @@ export const sendApprovalEmail = async (alumniData, ehsasId) => {
     </html>
   `;
 
-  return sendEmail(alumniData.email, subject, htmlContent);
+  return sendEmail(recipientEmail, subject, htmlContent);
 };
 
 export const sendRejectionEmail = async (alumniData) => {
