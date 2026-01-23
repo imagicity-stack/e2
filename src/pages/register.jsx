@@ -74,7 +74,6 @@ const RegisterPage = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
   const classes = ["Nursery", "LKG", "UKG", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
-  const houses = ["Red House", "Blue House", "Green House", "Yellow House"];
 
   if (isSuccess) {
     return (
@@ -182,10 +181,7 @@ const RegisterPage = () => {
                 </div>
                 <div>
                   <Label className="form-label" htmlFor="last_house">Last House while in School *</Label>
-                  <Select value={formData.last_house} onValueChange={(val) => handleSelectChange("last_house", val)}>
-                    <SelectTrigger className="input-heritage rounded-none h-12" data-testid="select-house"><SelectValue placeholder="Select house" /></SelectTrigger>
-                    <SelectContent>{houses.map((house) => (<SelectItem key={house} value={house}>{house}</SelectItem>))}</SelectContent>
-                  </Select>
+                  <Input id="last_house" name="last_house" value={formData.last_house} onChange={handleChange} required className="input-heritage rounded-none h-12" placeholder="e.g., Red House" data-testid="input-house" />
                 </div>
                 <div>
                   <Label className="form-label" htmlFor="profession">Current Profession</Label>
