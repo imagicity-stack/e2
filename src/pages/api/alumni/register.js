@@ -60,11 +60,12 @@ export default async function handler(req, res) {
     };
     await db.collection("notifications").add(notificationDoc);
 
-    await sendRegistrationNotification(alumniDoc);
+    const emailSent = await sendRegistrationNotification(alumniDoc);
 
     res.status(201).json({
       message: "Registration submitted successfully. You will receive confirmation once approved.",
       id: alumniId,
+      email_sent: emailSent,
     });
   } catch (error) {
     sendError(res, error);

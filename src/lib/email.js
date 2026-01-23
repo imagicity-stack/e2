@@ -5,7 +5,7 @@ const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
 const SMTP_USER = process.env.SMTP_USER || "";
 const SMTP_PASSWORD = process.env.SMTP_PASSWORD || "";
 const SMTP_FROM_EMAIL = process.env.SMTP_FROM_EMAIL || "ehsas@eldenheights.org";
-const SMTP_NOTIFICATION_EMAIL = process.env.SMTP_NOTIFICATION_EMAIL || "ehsas@eldenheights.org";
+const SMTP_NOTIFICATION_EMAIL = process.env.SMTP_NOTIFICATION_EMAIL || SMTP_FROM_EMAIL;
 const SMTP_FROM_NAME = process.env.SMTP_FROM_NAME || "EHSAS - Elden Heights School Alumni Society";
 
 const transporter = nodemailer.createTransport({
@@ -16,6 +16,14 @@ const transporter = nodemailer.createTransport({
 });
 
 export const sendEmail = async (toEmail, subject, htmlContent) => {
+  if (!toEmail) {
+    console.warn("Email send skipped: missing recipient.");
+    return false;
+  }
+  if (!SMTP_USER || !SMTP_PASSWORD) {
+    console.warn("Email send skipped: missing SMTP credentials.");
+    return false;
+  }
   try {
     await transporter.sendMail({
       from: `${SMTP_FROM_NAME} <${SMTP_FROM_EMAIL}>`,
