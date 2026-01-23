@@ -3,10 +3,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { toast } from "sonner";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Shield } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import { getFirebaseAuth } from "@/lib/firebaseClient";
 
 const API = `${process.env.NEXT_PUBLIC_API_BASE || ""}/api`;
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_elden-alumni/artifacts/0ansi0ti_LOGO-2.png";
@@ -29,8 +31,19 @@ const AdminLoginPage = () => {
     setIsLoading(true);
 
     try {
-      const res = await axios.post(`${API}/auth/admin/login`, credentials);
-      localStorage.setItem("adminToken", res.data.token);
+      const firebaseAuth = getFirebaseAuth();
+      if (!firebaseAuth) {
+        throw new Error("Firebase Auth is not available in this environment.");
+      }
+
+      const userCredential = await signInWithEmailAndPassword(
+        firebaseAuth,
+        credentials.email,
+        credentials.password
+      );
+      const idToken = await userCredential.user.getIdToken();
+      const res = await axios.post(`${API}/auth/admin/login`, { idToken });
+      localStorage.setItem("adminToken", idToken);
       localStorage.setItem("adminEmail", res.data.email);
       toast.success("Welcome back, Admin!");
       router.push("/admin/dashboard");
